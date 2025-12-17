@@ -1,0 +1,88 @@
+/* General page styling */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f4f6f8;
+  color: #222;
+  margin: 0;
+}
+
+/* Top navigation bar */
+.topbar {
+  background-color: #1f4fa3;
+  padding: 15px 0;
+}
+
+.brand {
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.navlinks a {
+  color: white;
+  text-decoration: none;
+  margin-right: 15px;
+}
+
+.navlinks a:hover {
+  text-decoration: underline;
+}
+
+/* Page layout */
+.page {
+  width: 80%;
+  margin: auto;
+  padding: 20px;
+}
+
+/* Card-style content box */
+.card {
+  background-color: white;
+  padding: 25px;
+  border-radius: 6px;
+}
+
+/* Section headers */
+.section {
+  color: #1f4fa3;
+  margin-top: 40px;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 5px;
+}
+
+/* Lists */
+ol, ul {
+  margin-left: 25px;
+}
+
+/* Image styling */
+.figure {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.figure img {
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Video */
+.video-wrap {
+  margin: 30px 0;
+}
+
+/* Tableau */
+.tableau-wrap {
+  margin: 40px 0;
+}
+
+/* Back-to-top link */
+.caption a {
+  color: #1f4fa3;
+  text-decoration: none;
+}
+
+.caption a:hover {
+  text-decoration: underline;
+}
