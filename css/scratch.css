@@ -1,4 +1,5 @@
-/* General page styling */
+/* Basic scratch page styles (beginner level) */
+
 body {
   font-family: Arial, Helvetica, sans-serif;
   background-color: #f4f6f8;
@@ -6,16 +7,22 @@ body {
   margin: 0;
 }
 
-/* Top navigation bar */
+/* Top bar */
 .topbar {
   background-color: #1f4fa3;
   padding: 15px 0;
+}
+
+.wrap {
+  width: 80%;
+  margin: auto;
 }
 
 .brand {
   color: white;
   font-weight: bold;
   font-size: 20px;
+  margin-bottom: 10px;
 }
 
 .navlinks a {
@@ -28,24 +35,23 @@ body {
   text-decoration: underline;
 }
 
-/* Page layout */
+/* Main page content */
 .page {
   width: 80%;
   margin: auto;
   padding: 20px;
 }
 
-/* Card-style content box */
 .card {
   background-color: white;
   padding: 25px;
   border-radius: 6px;
 }
 
-/* Section headers */
+/* Headings */
 .section {
   color: #1f4fa3;
-  margin-top: 40px;
+  margin-top: 35px;
   border-bottom: 2px solid #ccc;
   padding-bottom: 5px;
 }
@@ -55,7 +61,7 @@ ol, ul {
   margin-left: 25px;
 }
 
-/* Image styling */
+/* Image */
 .figure {
   text-align: center;
   margin: 20px 0;
@@ -67,17 +73,12 @@ ol, ul {
   border-radius: 5px;
 }
 
-/* Video */
-.video-wrap {
+/* Tableau spacing */
+.tableau-wrap {
   margin: 30px 0;
 }
 
-/* Tableau */
-.tableau-wrap {
-  margin: 40px 0;
-}
-
-/* Back-to-top link */
+/* Back to top link */
 .caption a {
   color: #1f4fa3;
   text-decoration: none;
@@ -86,3 +87,4 @@ ol, ul {
 .caption a:hover {
   text-decoration: underline;
 }
+
