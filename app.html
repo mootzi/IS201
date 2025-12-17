@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Liam Stuart | Mini Web App</title>
+  <style>
+    /* Single-file app: HTML + CSS + JS on this page */
+    :root{
+      --bg1:#0b1020;
+      --bg2:#101a33;
+      --card:rgba(255,255,255,.97);
+      --ink:#0d1730;
+      --muted:#5b667d;
+      --accent:#2a7be4;
+      --accent2:#00b894;
+      --danger:#e17055;
+      --shadow:0 12px 32px rgba(0,0,0,.22);
+      --radius:18px;
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
+      background: linear-gradient(120deg, var(--bg1), var(--bg2));
+      color:rgba(255,255,255,.92);
+    }
+    a{color:#fff; text-decoration:none;}
+    a:hover{text-decoration:underline;}
+
+    .top{
+      position:sticky;
+      top:0;
+      backdrop-filter: blur(10px);
+      background:rgba(11,16,32,.85);
+      border-bottom:1px solid rgba(255,255,255,.08);
+      z-index:10;
+    }
+    .top .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:14px 18px;
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+    .title{font-weight:800; letter-spacing:.3px;}
+    .links{margin-left:auto; display:flex; gap:10px; flex-wrap:wrap;}
+    .links a{padding:8px 10px; border-radius:12px;}
+    .links a:hover{background:rgba(255,255,255,.10);}
+
+    .page{
+      max-width:1100px;
+      margin:0 auto;
+      padding:26px 18px 46px;
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap:18px;
+    }
+    @media (max-width: 920px){ .page{grid-template-columns:1fr;} }
+
+    .card{
+      background:var(--card);
+      color:var(--ink);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+      border:1px solid rgba(255,255,255,.35);
+    }
+    h1,h2{margin:0 0 8px;}
+    h1{font-size:28px;}
+    h2{font-size:18px;}
+    p{margin:0 0 12px; color:var(--muted); line-height:1.5;}
+
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      background:rgba(42,123,228,.10);
+      border:1px solid rgba(42,123,228,.20);
+      color:var(--ink);
+      font-size:12px;
+    }
+
+    label{font-size:13px; color:var(--muted);}
+    select, input[type="number"], input[type="text"]{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(0,0,0,.12);
+      min-width:180px;
+      font-size:14px;
+    }
+
+    .btn{
+      border:0;
+      border-radius:12px;
+      padding:10px 12px;
+      cursor:pointer;
+      font-weight:700;
+      background:var(--accent);
+      color:#fff;
+    }
+    .btn.secondary{background:rgba(42,123,228,.14); color:var(--ink); border:1px solid rgba(42,123,228,.25);}
+    .btn.good{background:var(--accent2);}
+    .btn.warn{background:var(--danger);}
+    .btn:active{transform:translateY(1px);}
+
+    .panel{
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.10);
+      padding:14px;
+      background:rgba(0,0,0,.02);
+      margin-top:12px;
+    }
+
+    .drill{
+      border-left:5px solid var(--accent);
+      padding:12px 12px;
+      border-radius:14px;
+      background:#fff;
+    }
+    .drill h3{margin:0 0 6px; font-size:18px;}
+    .drill .meta{font-size:13px; color:var(--muted); margin-bottom:10px;}
+    .drill ul{margin:0; padding-left:18px; color:var(--ink);}
+
+    .split{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+    @media (max-width: 560px){ .split{grid-template-columns:1fr;} }
+
+    .timer{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:12px;
+      border-radius:14px;
+      background:rgba(0,0,0,.03);
+      border:1px solid rgba(0,0,0,.10);
+    }
+    .time{
+      font-variant-numeric: tabular-nums;
+      font-size:26px;
+      font-weight:800;
+      color:#0d1730;
+    }
+
+    .list{
+      margin:10px 0 0;
+      padding:0;
+      list-style:none;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .saved{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.10);
+      background:#fff;
+    }
+    .saved strong{display:block; margin-bottom:4px;}
+    .saved small{color:var(--muted);}
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%);
+      background:rgba(0,0,0,.78);
+      color:#fff;
+      padding:10px 12px;
+      border-radius:999px;
+      font-size:13px;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .2s ease;
+    }
+    .toast.show{opacity:1;}
+  </style>
+</head>
+<body>
+  <div class="top">
+    <div class="wrap">
+      <div class="title">Mini Web App • Rocket League Drill Generator</div>
+      <div class="links">
+        <a href="scratch.html">← Back to Scratch</a>
+        <a href="index.html">Professional Site</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="page">
+    <section class="card">
+      <h1>Generate a training drill</h1>
+      <p>
+        This app helps you generate quick Rocket League practice drills based on what you want to improve.
+        It also has a built-in timer and lets you save favorite drills (stored in your browser).
+      </p>
+
+      <div class="row" style="margin-top:8px;">
+        <span class="pill">Single-page app</span>
+        <span class="pill">LocalStorage favorites</span>
+        <span class="pill">Timer + randomizer</span>
+      </div>
+
+      <div class="panel">
+        <div class="split">
+          <div>
+            <label for="mode">Mode</label><br />
+            <select id="mode">
+              <option value="2v2">2v2</option>
+              <option value="1v1">1v1</option>
+              <option value="3v3">3v3</option>
+              <option value="freeplay">Freeplay</option>
+            </select>
+          </div>
+          <div>
+            <label for="focus">Focus</label><br />
+            <select id="focus">
+              <option value="positioning">Positioning</option>
+              <option value="defense">Defense</option>
+              <option value="firsttouch">First touch</option>
+              <option value="shooting">Shooting</option>
+              <option value="kickoffs">Kickoffs</option>
+              <option value="boost">Boost management</option>
+              <option value="consistency">Consistency</option>
+            </select>
+          </div>
+          <div>
+            <label for="difficulty">Difficulty</label><br />
+            <select id="difficulty">
+              <option value="easy">Easy</option>
+              <option value="medium" selected>Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+          <div>
+            <label for="minutes">Timer (minutes)</label><br />
+            <input id="minutes" type="number" min="1" max="60" value="10" />
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:12px;">
+          <button class="btn" id="generate">Generate drill</button>
+          <button class="btn secondary" id="copy">Copy drill</button>
+          <button class="btn good" id="save">Save to favorites</button>
+        </div>
+
+        <div id="drill" class="drill" style="margin-top:14px; display:none;"></div>
+
+        <div class="timer" style="margin-top:14px;">
+          <div>
+            <div style="font-size:13px; color:var(--muted);">Practice timer</div>
+            <div class="time" id="time">10:00</div>
+          </div>
+          <div class="row" style="justify-content:flex-end;">
+            <button class="btn" id="start">Start</button>
+            <button class="btn secondary" id="pause">Pause</button>
+            <button class="btn warn" id="reset">Reset</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="card">
+      <h2>Favorites</h2>
+      <p>Saved drills live in your browser (no sign-in required). You can remove them anytime.</p>
+
+      <ul class="list" id="favorites"></ul>
+
+      <div class="panel">
+        <h2>How this goes beyond a basic app</h2>
+        <ul style="margin:0; padding-left:18px; color:var(--ink);">
+          <li>Custom drill library + filters (mode/focus/difficulty)</li>
+          <li>Timer with pause/resume/reset + auto sync to the minutes input</li>
+          <li>Favorites stored with <code>localStorage</code></li>
+          <li>Copy-to-clipboard button for sharing drills</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <div class="toast" id="toast">Copied!</div>
+
+  <script>
+    // --- Drill library (hand-tuned) ---
+    const DRILLS = [
+      {
+        focus: "positioning",
+        mode: ["2v2","3v3"],
+        difficulty: "easy",
+        title: "Shadow + Retreat Lanes",
+        meta: "Build automatic recoveries so you stop over-committing.",
+        steps: [
+          "Play a casual/private match and focus ONLY on rotating behind your teammate.",
+          "After every touch, immediately pick a retreat lane (back post or mid boost).",
+          "Say out loud: 'I’m second' until you clearly become first again."
+        ]
+      },
+      {
+        focus: "positioning",
+        mode: ["1v1"],
+        difficulty: "medium",
+        title: "Challenge Timing (1v1)",
+        meta: "Improve reads: when to dive, when to shadow.",
+        steps: [
+          "For 5 minutes, do NOT challenge until the opponent’s touch is heavy.",
+          "Next 5 minutes, challenge early whenever they face away from the ball.",
+          "Review: which style gave fewer open nets?"
+        ]
+      },
+      {
+        focus: "defense",
+        mode: ["2v2","3v3"],
+        difficulty: "medium",
+        title: "Back Post Discipline",
+        meta: "Fix the #1 defensive habit that wins games.",
+        steps: [
+          "On every defensive rotation, touch back post before you challenge.",
+          "If the ball is mid, you stay patient and cover net-first.",
+          "Only dive if the shot is immediate or your teammate calls you up."
+        ]
+      },
+      {
+        focus: "defense",
+        mode: ["freeplay"],
+        difficulty: "easy",
+        title: "50/50 Fundamentals",
+        meta: "Practice not getting dunked.",
+        steps: [
+          "In Freeplay, roll the ball forward, then approach as if for a 50.",
+          "Focus on staying centered behind the ball with your nose slightly down.",
+          "Repeat 20 times from different angles."
+        ]
+      },
+      {
+        focus: "shooting",
+        mode: ["freeplay"],
+        difficulty: "medium",
+        title: "Corners Only",
+        meta: "Accuracy > power.",
+        steps: [
+          "Take 25 shots: only count it if it hits inside either corner of the net.",
+          "If you miss, repeat the same setup until you score a corner.",
+          "Finish with 10 fast shots using minimal boost."
+        ]
+      },
+      {
+        focus: "firsttouch",
+        mode: ["freeplay"],
+        difficulty: "hard",
+        title: "First Touch to Space",
+        meta: "Turn possessions into pressure.",
+        steps: [
+          "Hit the ball up the wall, then catch/soft-touch it downfield.",
+          "Your first touch must move the ball away from an imaginary defender.",
+          "Repeat until you get 10 clean first touches in a row."
+        ]
+      },
+      {
+        focus: "kickoffs",
+        mode: ["1v1","2v2"],
+        difficulty: "medium",
+        title: "Kickoff Consistency",
+        meta: "Reduce freebies. Win more games.",
+        steps: [
+          "Play 10 kickoffs and focus on hitting the center of the ball.",
+          "Alternate between normal kickoff and delayed kickoff.",
+          "Track outcomes: win/neutral/lose. Aim for 7+ neutral or better."
+        ]
+      },
+      {
+        focus: "boost",
+        mode: ["2v2","3v3"],
+        difficulty: "easy",
+        title: "Small Pads Route",
+        meta: "Stop 'boost chasing' and stay relevant.",
+        steps: [
+          "For a full match, you may ONLY take small pads (no big boosts).",
+          "Stay supersonic using pad lines and momentum.",
+          "Notice how much more often you’re in the play."
+        ]
+      },
+      {
+        focus: "consistency",
+        mode: ["freeplay"],
+        difficulty: "medium",
+        title: "10-in-a-Row Challenge",
+        meta: "Make mechanics reliable.",
+        steps: [
+          "Pick one mechanic (half-flip, wave-dash, fast aerial, etc.).",
+          "Do it 10 times in a row with no mistakes.",
+          "If you fail, restart the count."
+        ]
+      }
+    ];
+
+    // --- DOM ---
+    const $ = (id) => document.getElementById(id);
+    const mode = $("mode"), focus = $("focus"), difficulty = $("difficulty"), minutes = $("minutes");
+    const drillBox = $("drill");
+    const favoritesEl = $("favorites");
+
+    // --- Toast ---
+    const toast = $("toast");
+    let toastTimer;
+    function showToast(msg){
+      toast.textContent = msg;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 1200);
+    }
+
+    // --- Favorites storage ---
+    const STORE_KEY = "liam_rl_drill_favorites_v1";
+    function loadFavs(){
+      try{ return JSON.parse(localStorage.getItem(STORE_KEY) || "[]"); }
+      catch{ return []; }
+    }
+    function saveFavs(favs){
+      localStorage.setItem(STORE_KEY, JSON.stringify(favs));
+      renderFavs();
+    }
+    function renderFavs(){
+      const favs = loadFavs();
+      favoritesEl.innerHTML = "";
+      if(favs.length === 0){
+        const li = document.createElement("li");
+        li.innerHTML = "<div class='saved'><div><strong>No favorites yet</strong><small>Generate a drill, then click ‘Save to favorites’.</small></div></div>";
+        favoritesEl.appendChild(li);
+        return;
+      }
+      favs.forEach((f, idx) => {
+        const li = document.createElement("li");
+        li.className = "saved";
+        li.innerHTML = `
+          <div>
+            <strong>${escapeHtml(f.title)}</strong>
+            <small>${escapeHtml(f.meta)} • ${escapeHtml(f.mode)} • ${escapeHtml(f.focus)} • ${escapeHtml(f.difficulty)}</small>
+          </div>
+          <div class="row" style="justify-content:flex-end;">
+            <button class="btn secondary" data-action="load" data-idx="${idx}">Load</button>
+            <button class="btn warn" data-action="delete" data-idx="${idx}">Delete</button>
+          </div>
+        `;
+        favoritesEl.appendChild(li);
+      });
+    }
+
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    // --- Drill generation ---
+    let currentDrill = null;
+
+    function pickRandom(arr){
+      return arr[Math.floor(Math.random()*arr.length)];
+    }
+
+    function generate(){
+      const m = mode.value;
+      const f = focus.value;
+      const d = difficulty.value;
+
+      const pool = DRILLS.filter(dr => dr.focus === f && dr.difficulty === d && dr.mode.includes(m));
+      const fallback = DRILLS.filter(dr => dr.focus === f && dr.mode.includes(m));
+      const chosen = (pool.length ? pickRandom(pool) : pickRandom(fallback.length ? fallback : DRILLS));
+
+      currentDrill = {
+        title: chosen.title,
+        meta: chosen.meta,
+        steps: chosen.steps,
+        mode: m,
+        focus: f,
+        difficulty: d
+      };
+
+      drillBox.style.display = "block";
+      drillBox.innerHTML = `
+        <h3>${escapeHtml(currentDrill.title)}</h3>
+        <div class="meta">${escapeHtml(currentDrill.meta)} • <strong>${escapeHtml(m)}</strong> • ${escapeHtml(f)} • ${escapeHtml(d)}</div>
+        <ul>${currentDrill.steps.map(s => `<li>${escapeHtml(s)}</li>`).join("")}</ul>
+      `;
+      showToast("Drill generated");
+    }
+
+    // --- Clipboard ---
+    async function copyDrill(){
+      if(!currentDrill){ generate(); }
+      const text = `${currentDrill.title}\n${currentDrill.meta}\nMode: ${currentDrill.mode} | Focus: ${currentDrill.focus} | Difficulty: ${currentDrill.difficulty}\n\n- ${currentDrill.steps.join("\n- ")}`;
+      try{
+        await navigator.clipboard.writeText(text);
+        showToast("Copied to clipboard");
+      }catch{
+        showToast("Copy failed (browser blocked)");
+      }
+    }
+
+    function saveCurrent(){
+      if(!currentDrill){ generate(); }
+      const favs = loadFavs();
+
+      // avoid duplicates by title+mode+focus+difficulty
+      const key = `${currentDrill.title}|${currentDrill.mode}|${currentDrill.focus}|${currentDrill.difficulty}`;
+      const exists = favs.some(x => `${x.title}|${x.mode}|${x.focus}|${x.difficulty}` === key);
+      if(exists){ showToast("Already saved"); return; }
+
+      favs.unshift({ ...currentDrill, savedAt: Date.now() });
+      saveFavs(favs.slice(0, 12)); // keep it tidy
+      showToast("Saved");
+    }
+
+    favoritesEl.addEventListener("click", (e) => {
+      const btn = e.target.closest("button");
+      if(!btn) return;
+      const action = btn.dataset.action;
+      const idx = Number(btn.dataset.idx);
+      const favs = loadFavs();
+      if(!Number.isFinite(idx) || idx < 0 || idx >= favs.length) return;
+
+      if(action === "delete"){
+        favs.splice(idx, 1);
+        saveFavs(favs);
+        showToast("Deleted");
+      }
+      if(action === "load"){
+        const f = favs[idx];
+        mode.value = f.mode;
+        focus.value = f.focus;
+        difficulty.value = f.difficulty;
+        currentDrill = f;
+        drillBox.style.display = "block";
+        drillBox.innerHTML = `
+          <h3>${escapeHtml(f.title)}</h3>
+          <div class="meta">${escapeHtml(f.meta)} • <strong>${escapeHtml(f.mode)}</strong> • ${escapeHtml(f.focus)} • ${escapeHtml(f.difficulty)}</div>
+          <ul>${f.steps.map(s => `<li>${escapeHtml(s)}</li>`).join("")}</ul>
+        `;
+        showToast("Loaded");
+      }
+    });
+
+    // --- Timer ---
+    let remaining = 10 * 60;
+    let tick = null;
+
+    function fmt(sec){
+      const m = Math.floor(sec/60);
+      const s = sec%60;
+      return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+
+    function syncFromInput(){
+      const mins = Math.max(1, Math.min(60, Number(minutes.value || 10)));
+      remaining = mins * 60;
+      $("time").textContent = fmt(remaining);
+    }
+
+    function startTimer(){
+      if(tick) return;
+      tick = setInterval(() => {
+        remaining = Math.max(0, remaining - 1);
+        $("time").textContent = fmt(remaining);
+        if(remaining === 0){
+          pauseTimer();
+          showToast("Time! Great work.");
+        }
+      }, 1000);
+    }
+
+    function pauseTimer(){
+      if(!tick) return;
+      clearInterval(tick);
+      tick = null;
+    }
+
+    function resetTimer(){
+      pauseTimer();
+      syncFromInput();
+      showToast("Timer reset");
+    }
+
+    // --- Wire up buttons ---
+    $("generate").addEventListener("click", generate);
+    $("copy").addEventListener("click", copyDrill);
+    $("save").addEventListener("click", saveCurrent);
+
+    $("start").addEventListener("click", startTimer);
+    $("pause").addEventListener("click", pauseTimer);
+    $("reset").addEventListener("click", resetTimer);
+
+    minutes.addEventListener("change", syncFromInput);
+
+    // init
+    syncFromInput();
+    renderFavs();
+    generate();
+  </script>
+</body>
+</html>
